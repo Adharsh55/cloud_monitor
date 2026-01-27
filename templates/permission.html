@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clearance Required</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="background:#0f172a; color:white; font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh;">
+    
+    <div style="background:#1e293b; padding:40px; border-radius:15px; text-align:center; border:1px solid #334155; width:400px;">
+        <h2 style="color:#38bdf8;">Identity Verified</h2>
+        <p style="color:#94a3b8;">You are logged in as: <b>{{ session['user'] }}</b></p>
+        <hr style="border:0; border-top:1px solid #334155; margin:20px 0;">
+        <p>This portal contains sensitive Multinational Logs. Do you accept the security protocols?</p>
+        
+        <form method="POST">
+            <button type="submit" style="background:#38bdf8; color:#0f172a; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:bold; width:100%;">
+                Accept & Enter Dashboard
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>

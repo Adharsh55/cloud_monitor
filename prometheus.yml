@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'cloudmonitor'
+    static_configs:
+      - targets: ['cloudmonitor-web:8000']

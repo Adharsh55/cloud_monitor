@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  # 1. The Database (Prometheus)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    restart: always
+
+  # 2. Your Application
+  cloudmonitor-web:
+    build: .
+    container_name: cloudmonitor-web
+    ports:
+      - "8000:8000"
+    depends_on:
+      - prometheus
+    restart: always
