@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Monitoring System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: opacity 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator.offline {
+            background: #f44336;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☁️ Cloud Monitoring System</h1>
+            <p class="subtitle">Real-time monitoring, logging, and alerting for your applications</p>
+        </header>
+        
+        <div class="dashboard">
+            <a href="http://localhost:3000" target="_blank" class="card">
+                <div class="card-icon">📊</div>
+                <h3>Grafana Dashboard</h3>
+                <p>Interactive dashboards for monitoring application metrics, logs, and performance data in real-time.</p>
+                <div class="status">
+                    <span>Status: <span id="grafana-status">Checking...</span></span>
+                    <span class="status-indicator" id="grafana-indicator"></span>
+                </div>
+                <button class="btn">Open Dashboard</button>
+            </a>
+            
+            <a href="http://localhost:9090" target="_blank" class="card">
+                <div class="card-icon">📈</div>
+                <h3>Prometheus</h3>
+                <p>Time-series database for collecting and querying metrics. View alerts and system performance data.</p>
+                <div class="status">
+                    <span>Status: <span id="prometheus-status">Checking...</span></span>
+                    <span class="status-indicator" id="prometheus-indicator"></span>
+                </div>
+                <button class="btn">View Metrics</button>
+            </a>
+            
+            <a href="http://localhost:9200" target="_blank" class="card">
+                <div class="card-icon">🔍</div>
+                <h3>Elasticsearch</h3>
+                <p>Search and analyze your application logs. Centralized log storage with powerful query capabilities.</p>
+                <div class="status">
+                    <span>Status: <span id="elasticsearch-status">Checking...</span></span>
+                    <span class="status-indicator" id="elasticsearch-indicator"></span>
+                </div>
+                <button class="btn">Search Logs</button>
+            </a>
+            
+            <a href="http://localhost:3001" target="_blank" class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Node.js Application</h3>
+                <p>Sample Node.js application generating logs and metrics. Test error generation and logging.</p>
+                <div class="status">
+                    <span>Status: <span id="node-status">Checking...</span></span>
+                    <span class="status-indicator" id="node-indicator"></span>
+                </div>
+                <button class="btn">Test App</button>
+            </a>
+            
+            <a href="http://localhost:5001" target="_blank" class="card">
+                <div class="card-icon">🐍</div>
+                <h3>Python Application</h3>
+                <p>Sample Python Flask application with logging. Generate test logs and monitor application health.</p>
+                <div class="status">
+                    <span>Status: <span id="python-status">Checking...</span></span>
+                    <span class="status-indicator" id="python-indicator"></span>
+                </div>
+                <button class="btn">Test App</button>
+            </a>
+            
+            <a href="http://localhost:8080" target="_blank" class="card">
+                <div class="card-icon">⚙️</div>
+                <h3>Jenkins CI/CD</h3>
+                <p>Continuous Integration and Deployment pipeline. Automate builds, tests, and deployments.</p>
+                <div class="status">
+                    <span>Status: <span id="jenkins-status">Checking...</span></span>
+                    <span class="status-indicator" id="jenkins-indicator"></span>
+                </div>
+                <button class="btn">Open Jenkins</button>
+            </a>
+        </div>
+        
+        <div class="card" style="grid-column: 1 / -1;">
+            <h3>Quick Actions</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                <button class="btn" onclick="generateLogs()">Generate Test Logs</button>
+                <button class="btn" onclick="triggerError()">Trigger Test Error</button>
+                <button class="btn" onclick="viewLogs()">View Container Logs</button>
+                <button class="btn" onclick="restartServices()">Restart Services</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Cloud Monitoring System v1.0 | Running on Windows</p>
+    </footer>
+
+    <script>
+        // Check service status
+        async function checkService(url, nameElement, indicatorElement) {
+            try {
+                const response = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+                nameElement.textContent = 'Online';
+                indicatorElement.style.background = '#4CAF50';
+                return true;
+            } catch (error) {
+                nameElement.textContent = 'Offline';
+                indicatorElement.style.background = '#f44336';
+                indicatorElement.classList.add('offline');
+                return false;
+            }
+        }
+        
+        // Check all services
+        async function checkAllServices() {
+            const services = [
+                { url: 'http://localhost:3000', name: 'grafana' },
+                { url: 'http://localhost:9090', name: 'prometheus' },
+                { url: 'http://localhost:9200', name: 'elasticsearch' },
+                { url: 'http://localhost:3001', name: 'node' },
+                { url: 'http://localhost:5001', name: 'python' },
+                { url: 'http://localhost:8080', name: 'jenkins' }
+            ];
+            
+            for (const service of services) {
+                const nameElement = document.getElementById(`${service.name}-status`);
+                const indicatorElement = document.getElementById(`${service.name}-indicator`);
+                await checkService(service.url, nameElement, indicatorElement);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+        
+        // Quick action functions
+        function generateLogs() {
+            alert('Test logs generation started. Check your applications at:\n\nNode.js: http://localhost:3001\nPython: http://localhost:5001');
+        }
+        
+        function triggerError() {
+            fetch('http://localhost:3001/api/error')
+                .then(() => alert('Error triggered! Check Grafana dashboard for alerts.'))
+                .catch(() => alert('Node.js app might be offline.'));
+        }
+        
+        function viewLogs() {
+            alert('To view logs, run in PowerShell:\n\ndocker-compose logs -f');
+        }
+        
+        function restartServices() {
+            if (confirm('Restart all services? This might take a moment.')) {
+                alert('Run in PowerShell:\n\ndocker-compose restart\n\nor\n\ndocker-compose up -d --build');
+            }
+        }
+        
+        // Initial status check
+        checkAllServices();
+        
+        // Auto-refresh status every 30 seconds
+        setInterval(checkAllServices, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Cloud Log Monitoring Dashboard",
+    "tags": ["logs", "monitoring", "cloud"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "CPU Usage",
+        "type": "graph",
+        "datasource": "Prometheus",
+        "targets": [{
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "{{instance}}"
+        }],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Memory Usage",
+        "type": "graph",
+        "datasource": "Prometheus",
+        "targets": [{
+          "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100",
+          "legendFormat": "{{instance}}"
+        }],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Error Logs",
+        "type": "table",
+        "datasource": "Elasticsearch",
+        "targets": [{
+          "query": "level:ERROR OR level:CRITICAL",
+          "refId": "A",
+          "metrics": [{"type": "count", "id": "1"}],
+          "bucketAggs": [{"type": "date_histogram", "field": "@timestamp", "id": "2", "settings": {"interval": "auto"}}]
+        }],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "HTTP Requests",
+        "type": "stat",
+        "datasource": "Prometheus",
+        "targets": [{
+          "expr": "rate(http_requests_total[5m])",
+          "refId": "A"
+        }],
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 16}
+      },
+      {
+        "id": 5,
+        "title": "Error Rate",
+        "type": "gauge",
+        "datasource": "Prometheus",
+        "targets": [{
+          "expr": "rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m]) * 100",
+          "refId": "A"
+        }],
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 16}
+      }
+    ],
+    "time": {"from": "now-6h", "to": "now"}
+  }
+}

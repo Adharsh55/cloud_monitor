@@ -1,0 +1,91 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = 'localhost:5000'
+        PROJECT_NAME = 'cloud-log-monitor'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/yourusername/cloud_log_monitor.git'
+            }
+        }
+        
+        stage('Build & Test') {
+            parallel {
+                stage('Test Node App') {
+                    steps {
+                        dir('node-app') {
+                            sh 'npm install'
+                            sh 'npm test'
+                        }
+                    }
+                }
+                
+                stage('Test Python App') {
+                    steps {
+                        dir('python-app') {
+                            sh 'python -m pytest tests/'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    docker.build("${PROJECT_NAME}-node-app", "./node-app")
+                    docker.build("${PROJECT_NAME}-python-app", "./python-app")
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose down'
+                sh 'docker-compose up -d --build'
+            }
+        }
+        
+        stage('Smoke Test') {
+            steps {
+                script {
+                    // Wait for services to start
+                    sleep 30
+                    
+                    // Test endpoints
+                    sh '''
+                        curl -f http://localhost:3001/health || exit 1
+                        curl -f http://localhost:5001/health || exit 1
+                        curl -f http://localhost:3000 || exit 1
+                        curl -f http://localhost:9090 || exit 1
+                    '''
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Pipeline completed'
+            cleanWs()
+        }
+        
+        success {
+            slackSend(
+                channel: '#deployments',
+                message: "✅ Deployment successful: ${env.BUILD_URL}"
+            )
+        }
+        
+        failure {
+            slackSend(
+                channel: '#alerts',
+                message: "❌ Deployment failed: ${env.BUILD_URL}"
+            )
+        }
+    }
+}

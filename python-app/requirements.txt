@@ -1,0 +1,6 @@
+flask
+python-json-logger
+psutil
+prometheus_client
+scikit-learn
+numpy
